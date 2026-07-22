@@ -23,7 +23,15 @@ export default function RootLayout({
             lang="en"
             className={`${inter.variable} h-full antialiased bg-gray-900 text-white`}
         >
-            <body className="min-h-full flex flex-col">{children}</body>
+            <body className="min-h-full flex flex-col">
+                <section className="flex h-screen">
+                    <main className="relative flex-1 overflow-auto min-w-0">
+                        <div className="p-4 sm:p-6 md:p-8 max-w-full md:max-w-3xl mx-auto h-full">
+                            {children}
+                        </div>
+                    </main>
+                </section>
+            </body>
         </html>
     );
 }
