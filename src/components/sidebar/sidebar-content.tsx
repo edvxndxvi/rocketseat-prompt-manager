@@ -10,8 +10,19 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Logo } from '../logo';
+import { Input } from '../ui/input';
 
-export const SidebarContent = () => {
+type Prompts = {
+    id: string;
+    title: string;
+    content: string;
+};
+
+export type SidebarContentProps = {
+    prompts: Prompts[];
+};
+
+export const SidebarContent = ({ prompts }: SidebarContentProps) => {
     const router = useRouter();
 
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -20,6 +31,10 @@ export const SidebarContent = () => {
     const expandSidebar = () => setIsCollapsed(false);
 
     const handleNewPrompt = () => router.push('/new');
+
+    const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newQuery = event.target.value;
+    };
 
     return (
         <aside
@@ -71,6 +86,18 @@ export const SidebarContent = () => {
                             </header>
                         </div>
 
+                        <section className="mb-5">
+                            <form action="">
+                                <Input
+                                    name="query"
+                                    type="text"
+                                    placeholder="Buscar prompts..."
+                                    onChange={handleQueryChange}
+                                    autoFocus
+                                />
+                            </form>
+                        </section>
+
                         <div>
                             <Button
                                 onClick={handleNewPrompt}
@@ -84,6 +111,9 @@ export const SidebarContent = () => {
                     </section>
                 </>
             )}
+            {prompts.map((prompt) => (
+                <p key={prompt.id}>{prompt.title}</p>
+            ))}
         </aside>
     );
 };

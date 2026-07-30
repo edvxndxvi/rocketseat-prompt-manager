@@ -15,7 +15,7 @@ const buttonVariants = cva(
                 outline: 'border bg-gray-700 text-white hover:bg-gray-600',
                 secondary:
                     'p-2 bg-gray-800 border border-gray-700 rounded-lg hover:bg-gray-600 transition-colors',
-                icon: 'text-alert-600 transition-all duration-200 ml-2 p-1 hover:bg-alert-600 rounded hover:text-white',
+                icon: 'text-alert-600 transition-all duration-200 p-1 hover:bg-alert-600 rounded hover:text-white',
                 link: 'text-primary underline-offset-4 hover:underline',
             },
             size: {
