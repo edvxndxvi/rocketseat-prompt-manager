@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { startTransition, useState } from 'react';
 import { Button } from '../ui/button';
 import {
     ArrowLeftToLine,
@@ -8,7 +8,7 @@ import {
     Plus as AddIcon,
     ArrowRightToLine,
 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Logo } from '../logo';
 import { Input } from '../ui/input';
 
@@ -24,8 +24,9 @@ export type SidebarContentProps = {
 
 export const SidebarContent = ({ prompts }: SidebarContentProps) => {
     const router = useRouter();
-
+    const searchParams = useSearchParams();
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [query, setQuery] = useState(searchParams.get('q') ?? '');
 
     const collapsedSidebar = () => setIsCollapsed(true);
     const expandSidebar = () => setIsCollapsed(false);
@@ -34,6 +35,11 @@ export const SidebarContent = ({ prompts }: SidebarContentProps) => {
 
     const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newQuery = event.target.value;
+        setQuery(newQuery);
+        startTransition(() => {
+            const url = newQuery ? `/?q=${encodeURIComponent(newQuery)}` : '/';
+            router.push(url, { scroll: false });
+        });
     };
 
     return (
@@ -92,6 +98,7 @@ export const SidebarContent = ({ prompts }: SidebarContentProps) => {
                                     name="query"
                                     type="text"
                                     placeholder="Buscar prompts..."
+                                    value={query}
                                     onChange={handleQueryChange}
                                     autoFocus
                                 />

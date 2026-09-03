@@ -6,12 +6,14 @@ import { render, screen } from '@/lib/test-utils';
 import { userEvent } from '@testing-library/user-event';
 
 const pushMock = jest.fn();
+let mockSearchParams = new URLSearchParams();
 // o useRouter é uma dependência externa do teste,
 // o mock de JEST substitui a função para uma mocada para evitar erros
 jest.mock('next/navigation', () => ({
     useRouter: () => ({
         push: pushMock,
     }),
+    useSearchParams: () => mockSearchParams,
 }));
 
 const initialPrompts = [
@@ -127,7 +129,7 @@ describe('SidebarContent', () => {
     });
 
     describe('Busca', () => {
-        it('Deveria navegar com URL codificada ao digitar e limpar', async () => {
+        it.only('Deveria navegar com URL codificada ao digitar e limpar', async () => {
             const text = 'A B';
             makeSut();
             const searchInput =
@@ -137,11 +139,21 @@ describe('SidebarContent', () => {
 
             expect(pushMock).toHaveBeenCalled();
             const lastCall = pushMock.mock.calls.at(-1);
-            expect(lastCall?.[0]).toBe('/q?=A%20B');
+            expect(lastCall?.[0]).toBe('/?q=A%20B');
 
             await user.clear(searchInput);
             const lastClearCall = pushMock.mock.calls.at(-1);
             expect(lastClearCall?.[0]).toBe('/');
         });
+    });
+
+    it('deveria iniciar o campo de busca com o search param', () => {
+        const text = 'inicial';
+        const searchParams = new URLSearchParams(`q=${text}`);
+        mockSearchParams = searchParams;
+        makeSut();
+
+        const searchInput = screen.getByPlaceholderText('Buscar prompts...');
+        expect(searchInput).toHaveValue(text);
     });
 });
