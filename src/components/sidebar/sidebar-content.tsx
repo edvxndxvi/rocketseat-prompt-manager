@@ -11,15 +11,11 @@ import {
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Logo } from '../logo';
 import { Input } from '../ui/input';
-
-type Prompts = {
-    id: string;
-    title: string;
-    content: string;
-};
+import { PromptSummary } from '@/core/domain/prompts/prompt.entity';
+import { PromptList } from '../prompts';
 
 export type SidebarContentProps = {
-    prompts: Prompts[];
+    prompts: PromptSummary[];
 };
 
 export const SidebarContent = ({ prompts }: SidebarContentProps) => {
@@ -59,6 +55,16 @@ export const SidebarContent = ({ prompts }: SidebarContentProps) => {
                             <ArrowRightToLine className="w-5 h-5 text-gray-100" />
                         </Button>
                     </header>
+
+                    <div className="flex flex-col items-center space-y-4">
+                        <Button
+                            onClick={handleNewPrompt}
+                            aria-label="Novo Prompt"
+                            title="Novo Prompt"
+                        >
+                            <AddIcon className="h-5 w-5 text-white" />
+                        </Button>
+                    </div>
                 </section>
             )}
 
@@ -116,11 +122,14 @@ export const SidebarContent = ({ prompts }: SidebarContentProps) => {
                             </Button>
                         </div>
                     </section>
+                    <nav
+                        className="flex-1 overflow-auto px-6 pb-6"
+                        aria-label="Lista de prompts"
+                    >
+                        <PromptList prompts={prompts} />
+                    </nav>
                 </>
             )}
-            {prompts.map((prompt) => (
-                <p key={prompt.id}>{prompt.title}</p>
-            ))}
         </aside>
     );
 };
