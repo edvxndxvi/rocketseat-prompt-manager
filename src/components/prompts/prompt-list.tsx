@@ -6,7 +6,6 @@ type PromptListProps = {
 };
 
 export const PromptList = ({ prompts }: PromptListProps) => {
-    console.log(prompts);
     return (
         <ul className="space-y-2">
             {prompts.map((prompt) => (
