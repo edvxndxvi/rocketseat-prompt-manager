@@ -94,6 +94,38 @@ describe('SidebarContent', () => {
             expect(expandButton).not.toBeInTheDocument();
         });
 
+        it('deveria reexpandir ao clicar no botão de expandir', async () => {
+            makeSut();
+            const collapseButton = screen.getByRole('button', {
+                name: /minimizar sidebar/i,
+            });
+
+            await user.click(collapseButton);
+
+            const expandButton = screen.getByRole('button', {
+                name: /expandir sidebar/i,
+            });
+
+            await user.click(expandButton);
+
+            expect(
+                screen.getByRole('button', {
+                    name: /minimizar sidebar/i,
+                })
+            ).toBeVisible();
+            expect(
+                screen.queryByRole('navigation', {
+                    name: 'Lista de prompts',
+                })
+            ).toBeVisible();
+
+            expect(expandButton).not.toBeInTheDocument();
+            const newCollapseButton = screen.getByRole('button', {
+                name: /minimizar sidebar/i,
+            });
+            expect(newCollapseButton).toBeVisible();
+        });
+
         // Nesse teste, simulamos o clique no botão de colapsar e verificamos se o botão de expandir aparece
 
         // Por essa razão deve ser uma função async
@@ -174,6 +206,34 @@ describe('SidebarContent', () => {
             await user.clear(searchInput);
             const lastClearCall = pushMock.mock.calls.at(-1);
             expect(lastClearCall?.[0]).toBe('/');
+        });
+
+        it('deveria submeter o form ao digitar no campo de busca', async () => {
+            const submitSpy = jest.spyOn(
+                HTMLFormElement.prototype,
+                'requestSubmit'
+            );
+            makeSut();
+
+            const searchInput =
+                screen.getByPlaceholderText('Buscar prompts...');
+            await user.type(searchInput, 'test');
+
+            expect(submitSpy).toHaveBeenCalled();
+            submitSpy.mockRestore();
+        });
+
+        it('deveria submeter formulário automaticamente ao montar quando houver query', async () => {
+            const submitSpy = jest
+                .spyOn(HTMLFormElement.prototype, 'requestSubmit')
+                .mockImplementation(() => undefined);
+            const text = 'test';
+            const searchParams = new URLSearchParams(`q=${text}`);
+            mockSearchParams = searchParams;
+            makeSut();
+
+            expect(submitSpy).toHaveBeenCalled();
+            submitSpy.mockRestore();
         });
 
         it('deveria iniciar o campo de busca com o search param', () => {
