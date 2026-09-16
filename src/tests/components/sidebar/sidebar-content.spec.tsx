@@ -128,7 +128,7 @@ describe('SidebarContent', () => {
 
             expect(newPromptButton).toBeVisible();
         });
-        it.only('não deveria exibir a lista de prompts na sidebar minimizada', async () => {
+        it('não deveria exibir a lista de prompts na sidebar minimizada', async () => {
             makeSut();
 
             const collapseButton = screen.getByRole('button', {
