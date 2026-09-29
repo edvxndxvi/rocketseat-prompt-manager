@@ -8,6 +8,7 @@ import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createPromptAction } from '@/app/actions/prompt.actions';
+import { toast } from 'sonner';
 
 export const PromptForm = () => {
     const router = useRouter();
@@ -24,9 +25,10 @@ export const PromptForm = () => {
         const result = await createPromptAction(data);
 
         if (!result.success) {
-            return;
+            toast.error(result.message);
         }
 
+        toast.success(result.message);
         router.refresh();
         form.reset();
     }

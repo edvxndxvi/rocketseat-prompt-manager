@@ -1,8 +1,17 @@
+import { CreatePromptDto } from '@/core/application/prompts/create-prompt.dto';
 import { Prompt } from '@/core/domain/prompts/prompt.entity';
 import { PrismaClient } from '@/generated/prisma/client';
 import { PrismaPromptRepository } from '@/infra/repository/prisma-prompt.repository';
 
 type PromptDelegateMock = {
+    create: jest.MockedFunction<
+        (args: { data: CreatePromptDto }) => Promise<void>
+    >;
+    findByTitle: jest.MockedFunction<
+        (args: {
+            where: { title: string };
+        }) => Promise<Pick<Prompt, 'id' | 'title' | 'content'> | null>
+    >;
     findMany: jest.MockedFunction<
         (args: {
             orderBy?: { createdAt: 'asc' | 'desc' };
@@ -23,6 +32,8 @@ type PrismaMock = {
 function createMockPrisma() {
     const mock: PrismaMock = {
         prompt: {
+            create: jest.fn(),
+            findByTitle: jest.fn(),
             findMany: jest.fn(),
         },
     };
@@ -36,6 +47,38 @@ describe('PrismaPromptRepository', () => {
     beforeEach(() => {
         prisma = createMockPrisma();
         repository = new PrismaPromptRepository(prisma);
+    });
+
+    describe('create', () => {
+        it('deve chamar o método create com os dados corretos', async () => {
+            const input = {
+                title: 'Title 1',
+                content: 'Content 1',
+            };
+
+            await repository.create(input);
+            expect(prisma.prompt.create).toHaveBeenCalledWith({ data: input });
+        });
+    });
+
+    describe('findByTitle', () => {
+        it('deve chamar corretamente o método findByTitle com o title', async () => {
+            const title = 'Title 1';
+            const input = {
+                id: '1',
+                title,
+                content: 'Content 1',
+            };
+
+            prisma.prompt.findByTitle.mockResolvedValue(input);
+
+            const result = await repository.findByTitle(title);
+
+            expect(prisma.prompt.findByTitle).toHaveBeenCalledWith({
+                where: { title },
+            });
+            expect(result).toEqual(input);
+        });
     });
 
     describe('findMany', () => {
