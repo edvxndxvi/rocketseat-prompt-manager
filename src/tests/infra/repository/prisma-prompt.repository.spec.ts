@@ -7,7 +7,7 @@ type PromptDelegateMock = {
     create: jest.MockedFunction<
         (args: { data: CreatePromptDto }) => Promise<void>
     >;
-    findByTitle: jest.MockedFunction<
+    findFirst: jest.MockedFunction<
         (args: {
             where: { title: string };
         }) => Promise<Pick<Prompt, 'id' | 'title' | 'content'> | null>
@@ -33,7 +33,7 @@ function createMockPrisma() {
     const mock: PrismaMock = {
         prompt: {
             create: jest.fn(),
-            findByTitle: jest.fn(),
+            findFirst: jest.fn(),
             findMany: jest.fn(),
         },
     };
@@ -62,7 +62,7 @@ describe('PrismaPromptRepository', () => {
     });
 
     describe('findByTitle', () => {
-        it('deve chamar corretamente o método findByTitle com o title', async () => {
+        it('deve chamar corretamente o método findFirst com o title', async () => {
             const title = 'Title 1';
             const input = {
                 id: '1',
@@ -70,11 +70,11 @@ describe('PrismaPromptRepository', () => {
                 content: 'Content 1',
             };
 
-            prisma.prompt.findByTitle.mockResolvedValue(input);
+            prisma.prompt.findFirst.mockResolvedValue(input);
 
             const result = await repository.findByTitle(title);
 
-            expect(prisma.prompt.findByTitle).toHaveBeenCalledWith({
+            expect(prisma.prompt.findFirst).toHaveBeenCalledWith({
                 where: { title },
             });
             expect(result).toEqual(input);
