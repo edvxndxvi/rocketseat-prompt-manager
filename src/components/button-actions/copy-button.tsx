@@ -4,7 +4,7 @@ import { Button } from '../ui/button';
 import { Check, Copy } from 'lucide-react';
 import { toast } from 'sonner';
 
-type CopyButtonProps = {
+export type CopyButtonProps = {
     textToCopy: string;
 };
 
@@ -33,7 +33,7 @@ export function CopyButton({ textToCopy }: CopyButtonProps) {
             timerRef.current = setTimeout(() => setIsCopied(false), 1000);
         } catch (error) {
             const _error = error as Error;
-            toast.error('Erro ao copiar o texto:' + _error.message);
+            toast.error('Erro ao copiar o texto: ' + _error.message);
         }
     };
 
