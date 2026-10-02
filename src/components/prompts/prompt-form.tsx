@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { Controller, useForm, useWatch } from 'react-hook-form';
+import { Controller, ErrorMessage, useForm, useWatch } from 'react-hook-form';
 import type { CreatePromptDto } from '@/core/application/prompts/create-prompt.dto';
 import { createPromptSchema } from '@/core/application/prompts/create-prompt.dto';
 import { Button } from '../ui/button';
@@ -57,26 +57,44 @@ export const PromptForm = () => {
                 control={form.control}
                 name="title"
                 render={({ field }) => (
-                    <Input
-                        {...field}
-                        placeholder="Título do prompt"
-                        variant="transparent"
-                        size="lg"
-                        autoFocus
-                        type="text"
-                    />
+                    <>
+                        <Input
+                            {...field}
+                            placeholder="Título do prompt"
+                            variant="transparent"
+                            size="lg"
+                            autoFocus
+                            type="text"
+                        />
+                        <ErrorMessage
+                            control={form.control}
+                            name="title"
+                            render={({ message }) => (
+                                <p className="text-red-500">{message}</p>
+                            )}
+                        />
+                    </>
                 )}
             />
             <Controller
                 control={form.control}
                 name="content"
                 render={({ field }) => (
-                    <Textarea
-                        {...field}
-                        placeholder="Digite o conteúdo do prompt."
-                        variant="transparent"
-                        size="lg"
-                    />
+                    <>
+                        <Textarea
+                            {...field}
+                            placeholder="Digite o conteúdo do prompt."
+                            variant="transparent"
+                            size="lg"
+                        />
+                        <ErrorMessage
+                            control={form.control}
+                            name="content"
+                            render={({ message }) => (
+                                <p className="text-red-500">{message}</p>
+                            )}
+                        />
+                    </>
                 )}
             />
         </form>
